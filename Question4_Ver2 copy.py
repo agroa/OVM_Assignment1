@@ -13,17 +13,18 @@ import pandas as pd
 
 
 #-------------------Constants----------------#
+E = 170
 sigma = 0.05
 r = 0.03
 q = 0.01
 max_price = 300
-price_step = 0.5
+price_step = 30
 
 #----------------Generate Random Stock Price Movements-----------------#
 # S0 = 170 #Starting Price
 mu = 0.03
-period = 0.1
-L = 1/3650
+period = 1
+L = 1/20
 period_step = L
 
 
@@ -44,29 +45,30 @@ period_step = L
 
 
 # #----------------Generate Random Stock Price Movements Starting from a Range of S0-----------------#
-S0 = np.arange(0, max_price, price_step)
-steps = int(period / L)
+S0 = np.arange(max_price, -1, -price_step)
+time_steps = int(period / L)
+numcols = time_steps + 1
+numrows = S0.size
 
 stock_paths = []
 for starting_price in S0:
     prices = [starting_price]
-    for i in range(steps):
+    for i in range(time_steps):
         Y = np.random.normal(0, 1)
         s_new = prices[-1] * (1 + mu * L + sigma * np.sqrt(L) * Y)
         prices.append(s_new)
     stock_paths.append(prices)
 
 
-time = np.arange(steps + 1)
-S0_grid, time_grid = np.meshgrid(S0, time)
+time = np.arange(time_steps + 1)
+# S0_grid, time_grid = np.meshgrid(S0, time)
 
-Z = np.array(stock_paths).T
+Z = np.array(stock_paths)
 
-df = pd.DataFrame(stock_paths).T
-
-df.insert(0, 'Time (days)', time)
+df = pd.DataFrame(stock_paths)
 
 df.to_csv('stock_paths.csv', index=False)
+
 
 #Plot the figure
 
@@ -98,56 +100,32 @@ df.to_csv('stock_paths.csv', index=False)
 #     for i in range(int(max_price/price_step)):
 #         options[i][j] = ((0.5 * (sigma**2) * stock[i][j]) * period_step * (2 * options[i][j-1] - options[i][j-2]) - (r-q) * stock[i][j] * period_step * price_step * options[i][j-1] - (price_step**2) * options[i-1][j]) / (0.5 * (sigma**2) * stock[i][j] * period_step - (r-q) * stock[i][j] * period_step * price_step - r * period_step * (price_step**2) - (price_step**2))
 
+#----------------Boundary Conditions-----------------#
+# Proper independent initialization
+max_time_price = [[0 for _ in range(numcols)] for _ in range(numrows)]
+zero_price_array = [[0 for _ in range(numcols)] for _ in range(numrows)]
 
-#----------------Setting Up Mesh for Numerical Method (Bottom-Right Start)-----------------#
-S = np.arange(0, max_price + price_step, price_step) 
-num_S = len(S)
-num_T = int(period/L) + 1 
+# Fill only the final column and final row
+for row in range(numrows):
+    # Final (rightmost) column: payoff at maturity
+    max_time_price[row][numcols - 1] = max(E - stock_paths[row][numcols - 1], 0)
 
-
-stock = Z
-
-E = 170
-
-options = np.zeros((num_S, num_T))
-options[:, -1] = np.maximum(E - S, 0)
-options[0, :] = E * np.exp(-r * (time[-1] - time)) 
-options[-1, :] = 0 
-
-
-for j in range(num_T - 2, -1, -1):
-    for i in range(1, num_S - 1):
-        S_val = S[i]
-        options[i, j] = (
-            (0.5 * sigma**2 * S_val**2 * period_step * (2*options[i, j+1] - options[i, j+1] - options[i, j+1])
-             - (r-q) * S_val * period_step * price_step * options[i, j+1]
-             - price_step**2 * options[i-1, j])
-            / (0.5 * sigma**2 * S_val**2 * period_step 
-               - (r-q) * S_val * period_step * price_step 
-               - r * period_step * price_step**2
-               - price_step**2)
-        )
+for column in range(numcols):
+    # Bottom (lowest S) row: price when S=0
+    zero_price_array[numrows - 1][column] = E * np.exp(-r * (numcols - column))
 
 
 
-fig = plt.figure(figsize=(12, 7))
-ax = fig.add_subplot(111, projection='3d')
-
-
-S_grid, T_grid = np.meshgrid(S, time) 
-Options_plot = options.T 
+# print(max_time_price)
+print(zero_price_array)
 
 
 
-surf = ax.plot_surface(S_grid, T_grid, Options_plot, cmap='viridis', edgecolor='k', alpha=0.8)
 
 
-ax.set_xlabel('Stock Price S')
-ax.set_ylabel('Time (days)')
-ax.set_zlabel('Option Value')
-ax.set_title('Option Value Surface for Different Stock Prices Over Time')
+def genVsArray(price_array):
+    
 
 
-fig.colorbar(surf, shrink=0.5, aspect=10)
 
-plt.show()
+    return None
