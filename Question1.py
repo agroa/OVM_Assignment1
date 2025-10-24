@@ -31,14 +31,14 @@ close_weekly = [float(row[4]) for row in data_weekly]
 
 
 #------------------------------ 1(a.1) --------------------------------#
-#t = np.arange(1, 754, 1)
-# plt.plot(t, close, marker='.', linestyle='-', label='Close Price')
-# plt.title('Stock Close Prices Over Time')
-# plt.xlabel('Date')
-# plt.ylabel('Close Price ($)')
-# plt.grid(True)
-# plt.legend()
-# plt.show()
+t = np.arange(1, 754, 1)
+plt.plot(t, close, marker='.', linestyle='-', label='Close Price')
+plt.title('Stock Close Prices Over Time')
+plt.xlabel('Date')
+plt.ylabel('Close Price ($)')
+plt.grid(True)
+plt.legend()
+plt.show()
 
 #------------------------------ 1(a.2) --------------------------------#
 
@@ -52,21 +52,21 @@ for i in range(len(close) - 1):
     returns.append((close[i + 1] - close[i]) / close[i])
     logreturns.append(np.log(close[i + 1] / close[i]))
 
-# plt.plot(t, returns, marker='.', linestyle='-', label='Close Returns')
-# plt.title('Stock Return Over Time')
-# plt.xlabel('Date')
-# plt.ylabel('Return')
-# plt.grid(True)
-# plt.legend()
-# plt.show()
+plt.plot(t, returns, marker='.', linestyle='-', label='Close Returns')
+plt.title('Stock Return Over Time')
+plt.xlabel('Date')
+plt.ylabel('Return')
+plt.grid(True)
+plt.legend()
+plt.show()
 
-# plt.plot(t, logreturns, marker='.', linestyle='-', label='Close LogReturns')
-# plt.title('Stock LogReturn Over Time')
-# plt.xlabel('Date')
-# plt.ylabel('LogReturn')
-# plt.grid(True)
-# plt.legend()
-# plt.show()
+plt.plot(t, logreturns, marker='.', linestyle='-', label='Close LogReturns')
+plt.title('Stock LogReturn Over Time')
+plt.xlabel('Date')
+plt.ylabel('LogReturn')
+plt.grid(True)
+plt.legend()
+plt.show()
 
 #------------------------------ 1(b) --------------------------------#
 
