@@ -79,6 +79,8 @@ plt.show()
 mean = np.mean(logreturns)
 std = np.std(logreturns, ddof = 1)
 
+print(mean, std)
+
 # scipy.stats.probplot(logreturns, dist="norm", plot=plt)
 # plt.title("QQ Plot of Data")
 # plt.show()
@@ -101,6 +103,12 @@ for i in range(len(close_weekly) - 1):
 # plt.legend()
 # plt.show()
 
+# plt.hist(returns_weekly, label='Weekly Close LogReturns')
+# plt.title('Weekly LogReturn Histogram')
+# plt.ylabel('LogReturn')
+# plt.legend()
+# plt.show()
+
 # plt.plot(t, logreturns_weekly, marker='.', linestyle='-', label='Close LogReturns')
 # plt.title('Weekly Stock LogReturn Over Time')
 # plt.xlabel('Week')
@@ -111,6 +119,7 @@ for i in range(len(close_weekly) - 1):
 
 mean = np.mean(logreturns_weekly)
 std = np.std(logreturns_weekly, ddof = 1)
+print(mean, std)
 
 # scipy.stats.probplot(logreturns_weekly, dist="norm", plot=plt)
 # plt.title("QQ Plot of Weekly LogReturns")
